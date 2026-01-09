@@ -43,7 +43,6 @@ flowchart TD
 
 ---
 
-```markdown
 ## Command Cheat Sheet
 
 | 목적 | 명령 |
@@ -58,7 +57,6 @@ flowchart TD
 | nginx 에러 로그 | `sudo tail -n 50 /var/log/nginx/error.log` |
 | 방화벽 룰 확인 | `sudo iptables -L INPUT -n --line-numbers`<br>`sudo ip6tables -L INPUT -n --line-numbers` |
 | 패킷 캡처 | `sudo tcpdump -i any tcp port 80 -n` |
-```
 
 ---
 
