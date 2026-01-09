@@ -81,8 +81,8 @@ curl -I http://localhost
 ```
 
 **재발 방지/점검 포인트**
-부팅 시 자동 기동 확인: systemctl is-enabled nginx
-장애 시 기본 루틴: status → ss → logs
+- 부팅 시 자동 기동 확인: systemctl is-enabled nginx
+- 장애 시 기본 루틴: status → ss → logs
 
 ## 4. Case B — 방화벽 규칙으로 80 포트 차단 (IPv4/IPv6 차이 포함)
 **재현(IPv4 차단)**
