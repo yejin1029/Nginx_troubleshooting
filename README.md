@@ -107,7 +107,7 @@ systemctl status nginx → inactive/dead
 ss -lntp | grep :80 → 리스닝 없음
 curl -I http://localhost → connection refused
 ```
-<details> <summary>Evidence (예시 출력)</summary>
+<details> <summary>Evidence</summary>
 <img width="1182" height="342" alt="image" src="https://github.com/user-attachments/assets/9212695f-c0e9-4b68-b863-5f57070d9e67" />
 <img width="940" height="80" alt="image" src="https://github.com/user-attachments/assets/2302a3c9-69ef-4456-a289-fc56a53c4b61" />
 </details>
@@ -244,7 +244,7 @@ sequenceDiagram
 - HTTP/1.1 200 OK 응답
 - FIN 교환으로 정상 종료
 
-**배운 점(요약)**
+**배운 점**
 - “접속 불가”는 서비스 상태/리스닝/방화벽/설정 오류 등 원인 영역이 다르므로, 증거 기반으로 빠르게 범위를 좁히는 루틴이 중요함.
 - WSL2 환경에서는 localhost가 IPv6로 해석될 수 있어, iptables(IPv4)만으로는 차단이 완성되지 않을 수 있음.
 - 설정 변경 시 nginx -t 선검증은 필수.
