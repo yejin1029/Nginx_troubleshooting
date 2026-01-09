@@ -5,9 +5,9 @@
 ![Service](https://img.shields.io/badge/Service-nginx%201.24.0-brightgreen?style=flat-square&logo=nginx&logoColor=white)
 ![Type](https://img.shields.io/badge/Type-Runbook-informational?style=flat-square&logo=github&logoColor=white)
 
-WSL2(Ubuntu) 환경에서 Nginx를 설치/기동한 뒤,
-의도적으로 장애를 재현하고(서비스 중지, 방화벽 차단, 설정 오류),
-증거 수집 → 원인 분석 → 복구까지 수행한 트러블슈팅 런북입니다.
+- WSL2(Ubuntu) 환경에서 Nginx를 설치/기동한 뒤,
+- 의도적으로 장애를 재현하고(서비스 중지, 방화벽 차단, 설정 오류),
+- 증거 수집 → 원인 분석 → 복구까지 수행한 트러블슈팅 런북입니다.
 
 
 ## 목표(산출물)
@@ -20,7 +20,7 @@ WSL2(Ubuntu) 환경에서 Nginx를 설치/기동한 뒤,
 
 ## 환경
 - OS: Ubuntu (WSL2)
-- Nginx: `nginx/1.24.0 (Ubuntu)` (예시)
+- Nginx: `nginx/1.24.0 (Ubuntu)`
 - 테스트 대상: `http://localhost:80`
 
 > 참고: WSL2에서는 `localhost`가 IPv6(::1)로 우선 해석될 수 있어,
