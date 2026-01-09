@@ -14,13 +14,13 @@
 ## Troubleshooting Flow
 
 ```mermaid
-flowchart TD
-  A[curl로 증상 확인] --> B[systemctl status nginx]
-  B --> C[ss -lntp :80 리스닝 확인]
-  C --> D[iptables/ip6tables 규칙 확인]
-  D --> E[nginx -t 설정 검증]
-  E --> F[journalctl / error.log 확인]
-  F --> G[tcpdump로 패킷 레벨 확인]
+flowchart LR
+  A[curl로 <br/> 증상 확인] --> B[systemctl status nginx]
+  B --> C[ss -lntp :80 <br/> 리스닝 확인]
+  C --> D[iptables/ip6tables <br/> 규칙 확인]
+  D --> E[nginx -t <br/> 설정 검증]
+  E --> F[journalctl <br/> error.log 확인]
+  F --> G[tcpdump로 <br/> 패킷 레벨 확인]
 ```
 
 ---
