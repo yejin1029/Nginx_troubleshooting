@@ -1,12 +1,9 @@
 # Nginx 접속 불가 트러블슈팅 런북 (WSL2 Ubuntu)
 
-![Tested](https://img.shields.io/badge/Tested-2026--01--09-success)
-![Env](https://img.shields.io/badge/Env-Ubuntu%20WSL2-blue)
-![Service](https://img.shields.io/badge/Service-nginx%201.24.0-brightgreen)
-![Type](https://img.shields.io/badge/Type-Runbook-informational)
-
-**Tested:** 2026-01-09 (KST)
-**Environment:** Ubuntu (WSL2), nginx 1.24.0
+![Tested](https://img.shields.io/badge/Tested-2026--01--09-success?style=flat-square)
+![Env](https://img.shields.io/badge/Env-Ubuntu%20WSL2-blue?style=flat-square&logo=ubuntu&logoColor=white)
+![Service](https://img.shields.io/badge/Service-nginx%201.24.0-brightgreen?style=flat-square&logo=nginx&logoColor=white)
+![Type](https://img.shields.io/badge/Type-Runbook-informational?style=flat-square&logo=github&logoColor=white)
 
 WSL2(Ubuntu) 환경에서 Nginx를 설치/기동한 뒤,
 의도적으로 장애를 재현하고(서비스 중지, 방화벽 차단, 설정 오류),
