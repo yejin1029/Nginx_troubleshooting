@@ -20,7 +20,7 @@ flowchart TD
   C --> D[iptables/ip6tables 규칙 확인]
   D --> E[nginx -t 설정 검증]
   E --> F[journalctl / error.log 확인]
-  F --> G[tcpdump로 패킷 레벨 확인(필요 시)]
+  F --> G[tcpdump로 패킷 레벨 확인]
 ```
 
 ---
