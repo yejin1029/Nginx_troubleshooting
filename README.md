@@ -71,7 +71,7 @@ systemctl status nginx → inactive/dead
 ss -lntp | grep :80 → 리스닝 없음
 curl -I http://localhost → connection refused
 ```
-**원인**
+**원인** \n
 nginx 프로세스 미기동으로 80 포트 리스닝이 존재하지 않음
 
 **복구**
@@ -98,7 +98,7 @@ curl -4 -I http://localhost || true # IPv4로 강제 접속 시 실패
 curl -6 -I http://localhost || true # IPv6로 강제 접속 시 성공할 수 있음
 ```
 
-**원인**
+**원인** \n
 iptables는 IPv4 규칙이므로, localhost가 IPv6(::1)로 연결되면 우회될 수 있음
 
 **조치(IPv6도 차단)**
@@ -127,6 +127,7 @@ curl -6 -I http://localhost
 배포 후 헬스체크 자동화(예: curl -f http://localhost/)
 
 ## 5. Case C — 설정 오류로 기동/재시작 실패 유도 (nginx -t 선검증)
+
 **재현(설정 백업 후 오류 삽입)**
 ```bash
 sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
@@ -137,6 +138,7 @@ sudo sh -c 'printf "\nTHIS_IS_ERROR;\n" >> /etc/nginx/nginx.conf'
 sudo nginx -t
 # 기대: unknown directive 또는 구문 오류로 test failed
 ```
+
 **재시작 실패 증거 수집**
 ```bash
 sudo systemctl restart nginx || true
@@ -144,7 +146,8 @@ systemctl status nginx -l --no-pager
 sudo journalctl -u nginx -n 50 --no-pager
 sudo tail -n 50 /var/log/nginx/error.log
 ```
-**원인**
+
+**원인** \n
 설정 파일 구문 오류로 인해 nginx가 기동/재시작 불가
 
 **복구(롤백)**
@@ -155,7 +158,7 @@ sudo systemctl restart nginx
 curl -I http://localhost
 ```
 
-**재발 방지/점검 포인트**
+**재발 방지/점검 포인트** \n
 배포 파이프라인/운영 절차에 nginx -t 사전 검증 포함
 설정 변경은 PR/리뷰 기반으로 관리
 
@@ -171,13 +174,13 @@ PowerShell에서는 curl이 Invoke-WebRequest 별칭일 수 있으므로 curl.ex
 curl.exe -I http://localhost
 ```
 
-**해석 포인트(정상 시)**
+**해석 포인트(정상 시)** \n
 SYN → SYN-ACK → ACK (3-way handshake)
 HTTP HEAD 요청
 HTTP/1.1 200 OK 응답
 FIN 교환으로 정상 종료
 
-**배운 점(요약)**
+**배운 점(요약)** \n
 - “접속 불가”는 서비스 상태/리스닝/방화벽/설정 오류 등 원인 영역이 다르므로, 증거 기반으로 빠르게 범위를 좁히는 루틴이 중요함.
 - WSL2 환경에서는 localhost가 IPv6로 해석될 수 있어, iptables(IPv4)만으로는 차단이 완성되지 않을 수 있음.
 - 설정 변경 시 nginx -t 선검증은 필수.
