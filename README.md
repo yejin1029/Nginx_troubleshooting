@@ -9,6 +9,21 @@
 - 의도적으로 장애를 재현하고(서비스 중지, 방화벽 차단, 설정 오류),
 - 증거 수집 → 원인 분석 → 복구까지 수행한 트러블슈팅 런북입니다.
 
+---
+
+## Troubleshooting Flow
+
+```mermaid
+flowchart TD
+  A[curl로 증상 확인] --> B[systemctl status nginx]
+  B --> C[ss -lntp :80 리스닝 확인]
+  C --> D[iptables/ip6tables 규칙 확인]
+  D --> E[nginx -t 설정 검증]
+  E --> F[journalctl / error.log 확인]
+  F --> G[tcpdump로 패킷 레벨 확인(필요 시)]
+```
+
+---
 
 ## 목표(산출물)
 - Nginx 정상 접속 확인
@@ -28,6 +43,24 @@
 
 ---
 
+## Command Cheat Sheet
+```markdown
+| 목적 | 명령 |
+|---|---|
+| 서비스 상태 | `systemctl status nginx --no-pager` |
+| 포트 리스닝 | `sudo ss -lntp | grep ':80'` |
+| 요청 테스트 | `curl -I http://localhost` |
+| IPv4 강제요청 | `curl -4 -I http://localhost` |
+| IPv6 강제요청 | `curl -6 -I http://localhost` |
+| 설정 검증 | `sudo nginx -t` |
+| 시스템 로그 | `sudo journalctl -u nginx -n 50 --no-pager` |
+| nginx 에러 로그 | `sudo tail -n 50 /var/log/nginx/error.log` |
+| 방화벽 룰 확인 | `sudo iptables -L INPUT -n --line-numbers` / `sudo ip6tables -L INPUT -n --line-numbers` |
+| 패킷 캡처 | `sudo tcpdump -i any tcp port 80 -n` |
+```
+
+---
+
 ## 1. 설치 및 정상 동작 확인
 
 ### 1) 설치/기동
@@ -44,6 +77,8 @@ sudo ss -lntp | grep ':80'
 curl -I http://localhost
 ```
 
+---
+
 ## 2. 공통 진단 커맨드
 ```bash
 # 1) 서비스 상태
@@ -59,6 +94,8 @@ curl -I http://localhost || true
 sudo tail -n 50 /var/log/nginx/error.log
 ```
 
+---
+
 ## 3. CASE A - Nginx 서비스 중지
 **재현**
 ```bash
@@ -71,6 +108,14 @@ systemctl status nginx → inactive/dead
 ss -lntp | grep :80 → 리스닝 없음
 curl -I http://localhost → connection refused
 ```
+<details> <summary>Evidence (예시 출력)</summary>
+  ```bash
+  systemctl status nginx --no-pager
+  sudo ss -lntp | grep ':80' || echo "No listener on 80"
+  curl -I http://localhost || true
+  ```
+</details>
+
 **원인**
 - nginx 프로세스 미기동으로 80 포트 리스닝이 존재하지 않음
 
@@ -83,6 +128,8 @@ curl -I http://localhost
 **재발 방지/점검 포인트**
 - 부팅 시 자동 기동 확인: systemctl is-enabled nginx
 - 장애 시 기본 루틴: status → ss → logs
+
+---
 
 ## 4. Case B — 방화벽 규칙으로 80 포트 차단 (IPv4/IPv6 차이 포함)
 **재현(IPv4 차단)**
@@ -106,12 +153,12 @@ curl -6 -I http://localhost || true # IPv6로 강제 접속 시 성공할 수 �
 sudo ip6tables -I INPUT -p tcp --dport 80 -j REJECT
 curl -6 -I http://localhost || true
 ```
-
-**규칙 확인(증거)**
-```bash
-sudo iptables  -L INPUT -n --line-numbers | head -n 20
-sudo ip6tables -L INPUT -n --line-numbers | head -n 20
-```
+<details> <summary>Evidence: iptables / ip6tables rules</summary>
+  ```bash
+  sudo iptables  -L INPUT -n --line-numbers | head -n 20
+  sudo ip6tables -L INPUT -n --line-numbers | head -n 20
+  ```
+</details>
 
 **복구(규칙 제거)**
 - 보통 -I로 넣으면 1번 라인에 들어가므로, 라인번호 확인 후 삭제합니다.
@@ -125,6 +172,8 @@ curl -6 -I http://localhost
 **재발 방지/점검 포인트**
 - 방화벽 룰 변경 이력/승인 프로세스
 - 배포 후 헬스체크 자동화(예: curl -f http://localhost/)
+
+---
 
 ## 5. Case C — 설정 오류로 기동/재시작 실패 유도 (nginx -t 선검증)
 
@@ -157,10 +206,20 @@ sudo nginx -t
 sudo systemctl restart nginx
 curl -I http://localhost
 ```
+<details> <summary>Evidence: nginx -t / systemd logs</summary>
+  ```bash
+  sudo nginx -t
+  systemctl status nginx -l --no-pager
+  sudo journalctl -u nginx -n 50 --no-pager
+  sudo tail -n 50 /var/log/nginx/error.log
+  ```
+</details>
 
 **재발 방지/점검 포인트**
 - 배포 파이프라인/운영 절차에 nginx -t 사전 검증 포함
 - 설정 변경은 PR/리뷰 기반으로 관리
+
+---
 
 ## 6. tcpdump로 패킷 레벨 검증(정상 흐름)
 
@@ -173,6 +232,21 @@ sudo tcpdump -i any tcp port 80 -n
 - PowerShell에서는 curl이 Invoke-WebRequest 별칭일 수 있으므로 curl.exe 사용
 ```powershell
 curl.exe -I http://localhost
+```
+
+**패킷 흐름 요약**
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant S as Nginx(:80)
+  C->>S: SYN
+  S->>C: SYN-ACK
+  C->>S: ACK
+  C->>S: HTTP HEAD /
+  S->>C: HTTP/1.1 200 OK
+  C->>S: FIN
+  S->>C: FIN
+  C->>S: ACK
 ```
 
 **해석 포인트(정상 시)**
