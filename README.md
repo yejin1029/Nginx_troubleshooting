@@ -1,8 +1,17 @@
 # Nginx 접속 불가 트러블슈팅 런북 (WSL2 Ubuntu)
 
+![Tested](https://img.shields.io/badge/Tested-2026--01--09-success)
+![Env](https://img.shields.io/badge/Env-Ubuntu%20WSL2-blue)
+![Service](https://img.shields.io/badge/Service-nginx%201.24.0-brightgreen)
+![Type](https://img.shields.io/badge/Type-Runbook-informational)
+
+**Tested:** 2026-01-09 (KST)
+**Environment:** Ubuntu (WSL2), nginx 1.24.0
+
 WSL2(Ubuntu) 환경에서 Nginx를 설치/기동한 뒤,
 의도적으로 장애를 재현하고(서비스 중지, 방화벽 차단, 설정 오류),
 증거 수집 → 원인 분석 → 복구까지 수행한 트러블슈팅 런북입니다.
+
 
 ## 목표(산출물)
 - Nginx 정상 접속 확인
@@ -64,7 +73,7 @@ sudo systemctl stop nginx
 systemctl status nginx → inactive/dead
 ss -lntp | grep :80 → 리스닝 없음
 curl -I http://localhost → connection refused
-
+```
 **원인**
 nginx 프로세스 미기동으로 80 포트 리스닝이 존재하지 않음
 
