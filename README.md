@@ -43,19 +43,20 @@ flowchart TD
 
 ---
 
-## Command Cheat Sheet
 ```markdown
+## Command Cheat Sheet
+
 | 목적 | 명령 |
 |---|---|
 | 서비스 상태 | `systemctl status nginx --no-pager` |
-| 포트 리스닝 | `sudo ss -lntp | grep ':80'` |
+| 포트 리스닝 확인 | `sudo ss -lntp \| grep ':80'` |
 | 요청 테스트 | `curl -I http://localhost` |
-| IPv4 강제요청 | `curl -4 -I http://localhost` |
-| IPv6 강제요청 | `curl -6 -I http://localhost` |
+| IPv4 강제 요청 | `curl -4 -I http://localhost` |
+| IPv6 강제 요청 | `curl -6 -I http://localhost` |
 | 설정 검증 | `sudo nginx -t` |
 | 시스템 로그 | `sudo journalctl -u nginx -n 50 --no-pager` |
 | nginx 에러 로그 | `sudo tail -n 50 /var/log/nginx/error.log` |
-| 방화벽 룰 확인 | `sudo iptables -L INPUT -n --line-numbers` / `sudo ip6tables -L INPUT -n --line-numbers` |
+| 방화벽 룰 확인 | `sudo iptables -L INPUT -n --line-numbers`<br>`sudo ip6tables -L INPUT -n --line-numbers` |
 | 패킷 캡처 | `sudo tcpdump -i any tcp port 80 -n` |
 ```
 
