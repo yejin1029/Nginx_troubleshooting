@@ -109,11 +109,8 @@ ss -lntp | grep :80 → 리스닝 없음
 curl -I http://localhost → connection refused
 ```
 <details> <summary>Evidence (예시 출력)</summary>
-  ```bash
-  systemctl status nginx --no-pager
-  sudo ss -lntp | grep ':80' || echo "No listener on 80"
-  curl -I http://localhost || true
-  ```
+<img width="1182" height="342" alt="image" src="https://github.com/user-attachments/assets/9212695f-c0e9-4b68-b863-5f57070d9e67" />
+<img width="940" height="80" alt="image" src="https://github.com/user-attachments/assets/2302a3c9-69ef-4456-a289-fc56a53c4b61" />
 </details>
 
 **원인**
@@ -154,10 +151,8 @@ sudo ip6tables -I INPUT -p tcp --dport 80 -j REJECT
 curl -6 -I http://localhost || true
 ```
 <details> <summary>Evidence: iptables / ip6tables rules</summary>
-  ```bash
-  sudo iptables  -L INPUT -n --line-numbers | head -n 20
-  sudo ip6tables -L INPUT -n --line-numbers | head -n 20
-  ```
+<img width="1122" height="105" alt="image" src="https://github.com/user-attachments/assets/6a224c93-3f82-433e-ac84-7db1aae37912" />
+<img width="1133" height="85" alt="image" src="https://github.com/user-attachments/assets/afc76ee4-0b31-4e27-9b08-3cb86129ae8f" />
 </details>
 
 **복구(규칙 제거)**
@@ -207,12 +202,7 @@ sudo systemctl restart nginx
 curl -I http://localhost
 ```
 <details> <summary>Evidence: nginx -t / systemd logs</summary>
-  ```bash
-  sudo nginx -t
-  systemctl status nginx -l --no-pager
-  sudo journalctl -u nginx -n 50 --no-pager
-  sudo tail -n 50 /var/log/nginx/error.log
-  ```
+<img width="1177" height="478" alt="image" src="https://github.com/user-attachments/assets/c7bb5409-bf3d-4bbd-913f-7980a0593462" />
 </details>
 
 **재발 방지/점검 포인트**
